@@ -26,6 +26,6 @@ public:
 
 	void run();
 
-	~Attack() = default;
+	~Attack();
 };
 

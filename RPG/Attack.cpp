@@ -31,6 +31,7 @@ std::string Attack::getName()
 
 bool Attack::isReady()
 {
+	
 	return m_cooldown <= turnsSinceLastAttack;
 }
 
@@ -54,4 +55,6 @@ void Attack::run()
 {
 	turnsSinceLastAttack++;
 }
+
+Attack::~Attack() {};
 

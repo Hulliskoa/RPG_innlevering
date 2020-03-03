@@ -63,9 +63,11 @@ void GameManager::startgame()
 	}
 
 	for (int i = 0; i < numAI; i++) {
-		int random = rand() % 4 + 1;
-		std::string aiName = "AI-" + i;
-
+		int random = rand() % 3 + 1;
+		
+		std::string test = "" + i;
+		std::string aiName = "AI-" + test;
+		std::cout << "AI " << i + 1 << " created" << std::endl;
 		switch (random) {
 		case 1:
 			players.push_back(std::make_shared<Wizard>(Wizard(aiName, true)));
@@ -77,6 +79,7 @@ void GameManager::startgame()
 			players.push_back(std::make_shared<Druid>(Druid(aiName, true)));
 			break;
 		default:
+			std::cout << "error" << std::endl;
 			break;
 		}
 
@@ -97,19 +100,22 @@ void GameManager::startgame()
 
 	
 
-	//kjører run metoden så lenge det er players igjen
+	//kjører run metoden så lenge det er mer enn 1 player med hp igjen
 	while (numAlive > 1) {
 		numAlive = 0;
 		for (auto x : players) {
-			if (x->getHp() > 1) {
+			if (x->getHp() > 0) {
 				numAlive++;
-				std::cout << numAlive << std::endl;
 			}
+		
 		}
-		run();
+		if (numAlive > 1) {
+			run();
+		}
+	
 	}
 
-	//henter it spilleren som har mer enn 0 hp og som dermed er vinneren
+	//henter ut spilleren som har mer enn 0 hp og som dermed er vinneren
 	std::vector<std::shared_ptr<Character>> playersWithHp;
 	for (auto player : players) {
 		if (player->getHp() > 0) {

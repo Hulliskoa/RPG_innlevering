@@ -1,4 +1,4 @@
 ﻿  Character.cpp
-C:\Users\truls\source\repos\RPG\RPG\Character.cpp(66,21): warning C4018:  '>': signed/unsigned mismatch
-C:\Users\truls\source\repos\RPG\RPG\Character.cpp(97,21): warning C4018:  '>': signed/unsigned mismatch
+C:\Users\truls\source\repos\RPG\RPG\Character.cpp(109,21): warning C4018:  '>': signed/unsigned mismatch
+C:\Users\truls\source\repos\RPG\RPG\Character.cpp(145,21): warning C4018:  '>': signed/unsigned mismatch
   RPG.vcxproj -> C:\Users\truls\source\repos\RPG\Debug\RPG.exe

@@ -14,7 +14,13 @@ HP Character::getHp()
 
 void Character::hit(int dmgReceived)
 {
-	m_hitPoints -= dmgReceived;
+	if (dmgReceived < 0) {
+		m_hitPoints += -dmgReceived;
+	}
+	else {
+		m_hitPoints -= dmgReceived;
+	}
+
 
 }
 
@@ -40,17 +46,42 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 	int counter = 1;
 
 	//sjekker om den boolske verdien isAI i character classen er satt til true
-	if (isAI) {
-		std::cout << "AI" << std::endl;
 
+	if (isAI) {
+		//ai kode
 		for (std::shared_ptr<Character> player : players) {
 			if (player != currentPlayer && player->getHp() > 0) {
-				std::cout << counter << ". " << player->getName() << " - HP: " << player->getHp().getHP() << std::endl;
 				availablePlayers.push_back(player);
-				counter++;
 			}
 		}
-		//LEGGE INN AI FUNKSJONALITET HER! ---------------------------->
+		//sjekker hvilke attacks som ikke har cooldown
+		for (Attack attack : m_attacks) {
+			if (attack.isReady()) {
+				availableAttacks.push_back(attack);
+			}
+		}
+		//sjekker om AI'en har et "target" hvis ikke settes target på nytt
+		if (aiCurrentTarget != nullptr) {
+			if (aiCurrentTarget->getHp() == 0) {
+				aiCurrentTarget = availablePlayers[rand() % availablePlayers.size()];
+			}
+		}
+		else {
+			aiCurrentTarget = availablePlayers[rand() % availablePlayers.size()];
+		}
+
+
+		int randomAttack = rand() % availableAttacks.size();
+		std::cout << getName() << " attacked " << aiCurrentTarget->getName() << std::endl;
+		aiCurrentTarget->hit(m_attacks[randomAttack].attackTarget());
+
+		if (aiCurrentTarget->getHp() == 0) {
+			std::cout << aiCurrentTarget->getName() << " died" << std::endl;
+		}
+		availableAttacks.clear();
+		std::cout << "\n";
+		std::cout << "------------------------------" << std::endl;
+		std::cout << "\n";
 	}
 	else {
 
@@ -104,6 +135,9 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 					availableAttacks.push_back(attack);
 					counter++;
 				}
+				else {
+					std::cout << "X" << ". " << attack.getName() << " - DMG: " << attack.getDamage() << " - Cooldown: " << attack.getCoolDown() << " turns" << std::endl;
+				}
 			}
 			std::cin >> chosenAttack;
 
@@ -123,8 +157,12 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 		std::cout << "\n";
 		std::cout << "------------------------------" << std::endl;
 		std::cout << "\n";
+
+
+		availableAttacks.clear();
 	}
 
+	//kjører run for å holde oversikt over cooldown
 	for (Attack x : m_attacks) {
 		x.run();
 	}

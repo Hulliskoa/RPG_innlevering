@@ -10,7 +10,6 @@ void HP::operator-=(int dmg)
 	int reducedDmg = dmg - m_AC;
 	if (m_HP - reducedDmg <= 0) {
 		m_HP = 0;
-		std::cout << "Target died" << std::endl;
 	}
 	else {
 		m_HP -= reducedDmg;
