@@ -1,7 +1,7 @@
 #include "Attack.h"
 #include <iostream>
 
-Attack::Attack(int dmg, int cooldown, std::string& name) : m_damage(dmg), m_cooldown(cooldown), m_name(name)
+Attack::Attack(int dmg, int cooldown, std::string& name, ActionType actionType) : m_damage(dmg), m_cooldown(cooldown), m_name(name), actionType(actionType)
 {
 	turnsSinceLastAttack = cooldown;
 
@@ -35,7 +35,6 @@ bool Attack::isReady()
 	return m_cooldown <= turnsSinceLastAttack;
 }
 
-
 int Attack::attackTarget()
 {
 	if (isReady()) {
@@ -49,6 +48,11 @@ int Attack::attackTarget()
 		return 0;
 	}
 
+}
+
+ActionType Attack::getActionType()
+{
+	return actionType;
 }
 
 void Attack::run()

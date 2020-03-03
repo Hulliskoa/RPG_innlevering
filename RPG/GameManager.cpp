@@ -17,21 +17,49 @@ void GameManager::startgame()
 	std::string playerName;
 	std::cout << "Enter number of players: ";
 	std::cin >> numPlayers;
+	
+	//https://stackoverflow.com/questions/18728754/checking-cin-input-stream-produces-an-integer
+
+	if (std::cin.fail()) {
+		std::cout << "Please enter a valid number: ";
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cin >> numPlayers;
+	}
+
+
 	std::cout << "\n";
 	std::cout << "------------------------------" << std::endl;
 	std::cout << "\n";
 	std::cout << "Enter number of AI players: ";
 	std::cin >> numAI;
 
+
+	if (std::cin.fail()) {
+		std::cout << "Please enter a valid number: ";
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cin >> numAI;
+	}
+
 	//loop for character creation
 	for (int i = 0; i < numPlayers; i++) {
 
 		bool switchBool = true;
-		std::cout << "Player " << i + 1 << ", Please enter your name: ";
+		std::cout << "\n";
+		std::cout << "------------------------------" << std::endl;
+		std::cout << "\n";
+		std::cout << "Player " << i + 1 << ", please enter your name: ";
 		std::cin >> playerName;
 		std::cout << "Choose your class:" << std::endl;
 		std::cout << "1. Wizard" << " | 2. Fighter" << " | 3. Druid" << std::endl;
 		std::cin >> classType;
+
+		if (std::cin.fail()) {
+			std::cout << "Please enter a valid choice" << std::endl;
+			std::cin >> classType;
+		}
+		
 
 		while (switchBool) {
 			switch (classType) {
@@ -64,9 +92,8 @@ void GameManager::startgame()
 
 	for (int i = 0; i < numAI; i++) {
 		int random = rand() % 3 + 1;
-		
-		std::string test = "" + i;
-		std::string aiName = "AI-" + test;
+	
+		std::string aiName = "AI-" + std::to_string(i + 1);
 		std::cout << "AI " << i + 1 << " created" << std::endl;
 		switch (random) {
 		case 1:

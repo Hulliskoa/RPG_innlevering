@@ -2,9 +2,13 @@
 
 #include <string>
 
+
+enum ActionType { heal, offensive };
+
 class Attack
 {
 private:
+	ActionType actionType;
 	int m_damage;
 	int m_cooldown;
 	int turnsSinceLastAttack;
@@ -12,7 +16,7 @@ private:
 
 public:
 
-	Attack(int dmg, int cooldown, std::string& name);
+	Attack(int dmg, int cooldown, std::string& name, ActionType actionType);
 
 	int getDamage();
 
@@ -23,7 +27,7 @@ public:
 	bool isReady();
 
 	int attackTarget();
-
+	ActionType getActionType();
 	void run();
 
 	~Attack();

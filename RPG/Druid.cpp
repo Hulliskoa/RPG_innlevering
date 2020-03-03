@@ -6,9 +6,7 @@ Druid::Druid(std::string name, bool AI)
 	m_characterName = name;
 	m_hitPoints = HP(100, 1);
 	std::string mainAttackName = "Main attack";
-	Attack newAttack(5, 0, mainAttackName);
-	addAttack(newAttack);
+	addAttack(std::make_shared<Attack>(5, 0, mainAttackName, offensive));
 	std::string specialAttackName = "Heal";
-	Attack specialAttack(-25, 3, specialAttackName);
-	addAttack(specialAttack);
+	addAttack(std::make_shared<Attack>(25, 3, specialAttackName, heal));
 }

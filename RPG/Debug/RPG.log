@@ -1,4 +1,7 @@
 ﻿  Character.cpp
-C:\Users\truls\source\repos\RPG\RPG\Character.cpp(109,21): warning C4018:  '>': signed/unsigned mismatch
-C:\Users\truls\source\repos\RPG\RPG\Character.cpp(145,21): warning C4018:  '>': signed/unsigned mismatch
+C:\Users\truls\source\repos\RPG\RPG\Character.cpp(118,21): warning C4018:  '>': signed/unsigned mismatch
+  GameManager.cpp
+  Generating Code...
+C:\Users\truls\source\repos\RPG\RPG\Character.cpp(162,21): warning C4018:  '>': signed/unsigned mismatch
+  LINK : C:\Users\truls\source\repos\RPG\Debug\RPG.exe not found or not built by the last incremental link; performing full link
   RPG.vcxproj -> C:\Users\truls\source\repos\RPG\Debug\RPG.exe

@@ -8,10 +8,9 @@ Wizard::Wizard(std::string& name, bool AI)
 	m_characterName = name;
 	m_hitPoints = HP(5, 1);
 	std::string mainAttackName = "Main attack";
-	Attack newAttack(10, 0, mainAttackName);
-	addAttack(newAttack);
+	addAttack(std::make_shared<Attack>(10, 0, mainAttackName, offensive));
 	std::string specialAttackName = "Special attack";
-	Attack specialAttack(50, 3, specialAttackName);
-	addAttack(specialAttack);
+	addAttack(std::make_shared<Attack>(50, 3, specialAttackName, offensive));
+
 
 }

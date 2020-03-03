@@ -14,22 +14,15 @@ HP Character::getHp()
 
 void Character::hit(int dmgReceived)
 {
-	if (dmgReceived < 0) {
-		m_hitPoints += -dmgReceived;
-	}
-	else {
-		m_hitPoints -= dmgReceived;
-	}
-
-
+	m_hitPoints -= dmgReceived;
 }
 
-void Character::addAttack(Attack newAttack)
+void Character::addAttack(std::shared_ptr<Attack> newAttack)
 {
 	m_attacks.push_back(newAttack);
 }
 
-std::vector<Attack> Character::getAttacks()
+std::vector<std::shared_ptr<Attack>> Character::getAttacks()
 {
 	return m_attacks;
 }
@@ -42,7 +35,7 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 	bool validChoice = true;
 	bool validPlayer = true;
 	std::vector<std::shared_ptr<Character>> availablePlayers;
-	std::vector<Attack> availableAttacks;
+	std::vector<std::shared_ptr<Attack>> availableAttacks;
 	int counter = 1;
 
 	//sjekker om den boolske verdien isAI i character classen er satt til true
@@ -55,8 +48,8 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 			}
 		}
 		//sjekker hvilke attacks som ikke har cooldown
-		for (Attack attack : m_attacks) {
-			if (attack.isReady()) {
+		for (auto attack : m_attacks) {
+			if (attack->isReady()) {
 				availableAttacks.push_back(attack);
 			}
 		}
@@ -72,8 +65,17 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 
 
 		int randomAttack = rand() % availableAttacks.size();
-		std::cout << getName() << " attacked " << aiCurrentTarget->getName() << std::endl;
-		aiCurrentTarget->hit(m_attacks[randomAttack].attackTarget());
+	
+		//sjekker om ai har valgt heal
+		if (availableAttacks[randomAttack]->getActionType() == offensive) {
+			std::cout << getName() << " attacked " << aiCurrentTarget->getName() << std::endl;
+			aiCurrentTarget->hit(availableAttacks[randomAttack]->attackTarget());
+		}
+		else {
+			std::cout << getName() << " healed for: " << availableAttacks[randomAttack]->getDamage() << " HP"  << std::endl;
+			currentPlayer->m_hitPoints += availableAttacks[randomAttack]->getDamage();
+		}
+	
 
 		if (aiCurrentTarget->getHp() == 0) {
 			std::cout << aiCurrentTarget->getName() << " died" << std::endl;
@@ -105,6 +107,13 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 
 			std::cin >> chosenPlayer;
 
+			if (std::cin.fail()) {
+				std::cout << "Please enter a valid number: ";
+				std::cin.clear();
+				std::cin.ignore(256, '\n');
+				std::cin >> chosenPlayer;
+			}
+
 			//sjekker om valget er innenfor antall spillere
 			if (chosenPlayer > availablePlayers.size()) {
 				std::cout << "Please enter a valid choice" << std::endl;
@@ -129,17 +138,25 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 		//while loop for å håndtere feil input fra spiller
 		while (validChoice) {
 			validChoice = false;
-			for (Attack attack : m_attacks) {
-				if (attack.isReady()) {
-					std::cout << counter << ". " << attack.getName() << " - DMG: " << attack.getDamage() << " - Cooldown: " << attack.getCoolDown() << " turns" << std::endl;
+			for (auto attack : m_attacks) {
+				if (attack->isReady()) {
+					std::cout << counter << ". " << attack->getName() << " - DMG: " << attack->getDamage() << " - Cooldown: " << attack->getCoolDown() << " turns" << std::endl;
 					availableAttacks.push_back(attack);
 					counter++;
 				}
 				else {
-					std::cout << "X" << ". " << attack.getName() << " - DMG: " << attack.getDamage() << " - Cooldown: " << attack.getCoolDown() << " turns" << std::endl;
+					std::cout << "X" << ". " << attack->getName() << " - DMG: " << attack->getDamage() << " - Cooldown: " << attack->getCoolDown() << " turns" << std::endl;
 				}
 			}
 			std::cin >> chosenAttack;
+
+			if (std::cin.fail()) {
+				std::cout << "Please enter a valid number: ";
+				std::cin.clear();
+				std::cin.ignore(256, '\n');
+				std::cin >> chosenAttack;
+			}
+
 
 			//sjekker om valget er innenfor antall angrep som er tilgjengelig
 			if (chosenAttack > availableAttacks.size()) {
@@ -152,8 +169,18 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 			chosenAttack -= 1;
 		}
 
-		//angriper valgt spiller med valgt angrep
-		availablePlayers[chosenPlayer]->hit(m_attacks[chosenAttack].attackTarget());
+		//sjekker om angrepet er offensivt eller ikke
+		if (availableAttacks[chosenAttack]->getActionType() == offensive) {
+			//angriper valgt spiller med valgt angrep
+			availablePlayers[chosenPlayer]->hit(availableAttacks[chosenAttack]->attackTarget());
+		}
+		else {
+			std::cout << getName() << " healed for: " << availableAttacks[chosenAttack]->getDamage() << " HP" << std::endl;
+			currentPlayer->m_hitPoints += availableAttacks[chosenAttack]->getDamage();
+		}
+
+	
+		
 		std::cout << "\n";
 		std::cout << "------------------------------" << std::endl;
 		std::cout << "\n";
@@ -163,8 +190,8 @@ void Character::runTurn(std::vector<std::shared_ptr<Character>> players, std::sh
 	}
 
 	//kjører run for å holde oversikt over cooldown
-	for (Attack x : m_attacks) {
-		x.run();
+	for (auto x : m_attacks) {
+		x->run();
 	}
 }
 Character::~Character() {};
